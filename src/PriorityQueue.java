@@ -1,4 +1,7 @@
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import sun.misc.Lock;
 
 /**
@@ -6,7 +9,7 @@ import sun.misc.Lock;
  * implementation that supports user-defined priority.
  * NOTE: Classes must override equals method.
  */
-public class AbstractFIFO{
+public class PriorityQueue{
 	
 	private Object[] elements;
 	private int nrOfElements;
@@ -18,7 +21,10 @@ public class AbstractFIFO{
 	
 	private Lock lock;
 	
-	public AbstractFIFO(){
+	private static final Logger LOGGER = Logger.getLogger(PriorityQueue.class.getName());
+
+	
+	public PriorityQueue(){
 		lock = new Lock();
 		elements = new Object[arrayIncrementSize];
 		priorities = new int[arrayIncrementSize];
@@ -53,7 +59,7 @@ public class AbstractFIFO{
 			nrOfElements++;
 			
 		} catch (InterruptedException e) {
-			System.out.println("Thread was interrupted");
+			LOGGER.log(Level.FINE, "Thread was interrupted.");
 		}finally{
 			lock.unlock();
 		}
@@ -70,14 +76,27 @@ public class AbstractFIFO{
 		try {
 			lock.lock();
 			
-			for(int i=0; i<nrOfElements; ++i){
+			int i=0;
+			boolean found = false;
+			
+			while(!found && i<nrOfElements){
 				if(elements[i].equals(element)){
-					priorities[i]=priority;
+					priorities[i] = priority;
+					found = true;
 				}
-			}		
+				++i;
+			}
+
+			if(!found){
+				String logMessage = "The specified element with class" + element.getClass().getName() + "was not found in the queue during method changePriority!";
+				LOGGER.log(Level.FINE, logMessage);
+				throw new PriorityQueueException(logMessage);
+			}
+				
 		} catch (InterruptedException e) {
-			System.out.println("Thread was interrupted");
-			//e.printStackTrace();
+			String logMessage = "Thread was interrupted during method call changePriority on a " + getClass().getName() + " object.";
+			LOGGER.log(Level.FINE, logMessage);
+			throw new PriorityQueueException(logMessage);
 		}finally{
 			lock.unlock();
 		}
@@ -86,19 +105,21 @@ public class AbstractFIFO{
 	/*
 	 * Returns the next element 
 	 * and removes it from the FIFO.
-	 * The arrays maximum size  is not shrinked 
+	 * The arrays maximum size is not shrinked 
 	 * when elements are removed, because the 
 	 * extra space will probably be needed later.
 	 * 
-	 * Time Complexity: O(n)
+	 * Time Complexity: O(2n)
 	 */
-	public Object getNext(){
+	public Object removeTop(){
 		try {
 			lock.lock();
 			
 			// Return null if there are no elements.
 			if(nrOfElements<1){
-				return null;
+				String logMessage = "No element to remove from the top in call removeTop.";
+				LOGGER.log(Level.FINE, logMessage);
+				throw new PriorityQueueException(logMessage);
 			}
 			
 			/*
@@ -128,7 +149,9 @@ public class AbstractFIFO{
 			nrOfElements--;
 			return next;
 		} catch (InterruptedException e) {
-			return null;
+			String logMessage = "Thread was interrupted during method call removeTop on a " + getClass().getName() + " object.";
+			LOGGER.log(Level.FINE, logMessage);
+			throw new PriorityQueueException(logMessage);
 
 		}finally{
 			lock.unlock();

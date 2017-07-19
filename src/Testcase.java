@@ -82,13 +82,13 @@ public class Testcase {
 	
 	@Test
 	public void insert_emptyFIFO_elementInserted(){
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 		
 		Patient p1 = new Patient("John", "Malon", 26, "paper cut");
 		
-		fifo.insert(p1, p1.getIllnessCriticality());
+		queue.insert(p1, p1.getIllnessCriticality());
 
-		Patient p = (Patient) fifo.getNext();
+		Patient p = (Patient) queue.removeTop();
 		assertEquals("John", p.getFirstName());
 		assertEquals("Malon", p.getLastName());
 		assertEquals(26, p.getAge());
@@ -98,15 +98,15 @@ public class Testcase {
 	
 	@Test
 	public void insert_notEmptyFIFO_elementInserted(){
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 
 		Patient p1 = new Patient("John", "Malon", 26, "paper cut");
 		Patient p2 = new Patient("Mike", "Mccain", 43, "gun shot wound");
 		
-		fifo.insert(p1, 1);
-		fifo.insert(p2, 2);
+		queue.insert(p1, 1);
+		queue.insert(p2, 2);
 
-		Patient p = (Patient) fifo.getNext();
+		Patient p = (Patient) queue.removeTop();
 		assertEquals("Mike", p.getFirstName());
 		assertEquals("Mccain", p.getLastName());
 		assertEquals(43, p.getAge());
@@ -114,33 +114,33 @@ public class Testcase {
 		
 	}
 	
-	@Test
+	@Test(expected = PriorityQueueException.class)
 	public void getNext_emptyFifo_null(){
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 		
-		assertEquals(null,fifo.getNext());
+		queue.removeTop();
 	}
 	
 	@Test
 	public void getNext_notEmptyFifo_getTheHighestPriorityElement(){
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 		
 		String s1 = "A";
 		String s2 = "B";
 		String s3 = "C";
 		String s4 = "D";
 		
-		fifo.insert(s1, 4);
-		fifo.insert(s2, 6);
-		fifo.insert(s3, 7);
-		fifo.insert(s4, 2);
+		queue.insert(s1, 4);
+		queue.insert(s2, 6);
+		queue.insert(s3, 7);
+		queue.insert(s4, 2);
 
-		assertEquals("C", (String)fifo.getNext());
+		assertEquals("C", (String)queue.removeTop());
 	}
 	
 	@Test
 	public void getNext_notEmptyFifo_getTheFirstHighestPriorityElement(){
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 		
 		String s1 = "A";
 		String s2 = "B";
@@ -149,19 +149,19 @@ public class Testcase {
 		String s5 = "E";
 		String s6 = "F";
 		
-		fifo.insert(s1, 4);
-		fifo.insert(s2, 6);
-		fifo.insert(s3, 7);
-		fifo.insert(s4, 2);
-		fifo.insert(s5, 7);
-		fifo.insert(s6, 7);
+		queue.insert(s1, 4);
+		queue.insert(s2, 6);
+		queue.insert(s3, 7);
+		queue.insert(s4, 2);
+		queue.insert(s5, 7);
+		queue.insert(s6, 7);
 
-		assertEquals("C", (String)fifo.getNext());
+		assertEquals("C", (String)queue.removeTop());
 	}
 	
 	@Test
 	public void changePriority_notEmptyList_lowestBecomesTheHighest(){
-	AbstractFIFO fifo = new AbstractFIFO();
+	PriorityQueue queue = new PriorityQueue();
 		
 		String s1 = "A";
 		String s2 = "B";
@@ -170,23 +170,23 @@ public class Testcase {
 		String s5 = "E";
 		String s6 = "F";
 		
-		fifo.insert(s1, 4);
-		fifo.insert(s2, 6);
-		fifo.insert(s3, 7);
-		fifo.insert(s4, 2);
-		fifo.insert(s5, 7);
-		fifo.insert(s6, 7);
+		queue.insert(s1, 4);
+		queue.insert(s2, 6);
+		queue.insert(s3, 7);
+		queue.insert(s4, 2);
+		queue.insert(s5, 7);
+		queue.insert(s6, 7);
 		
-		fifo.changePriority(s4, 8);
+		queue.changePriority(s4, 8);
 
-		assertEquals("D", (String)fifo.getNext());
+		assertEquals("D", (String)queue.removeTop());
 	}
 
 
 	
 	@Test
 	public void getElementNr_multipleNextMethodCall_elementNrDecrements() {
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue queue = new PriorityQueue();
 		
 		Patient p1 = new Patient("John", "Malon", 26, "paper cut");
 		Patient p2 = new Patient("Mike", "Mccain", 43, "gun shot wound");
@@ -194,29 +194,27 @@ public class Testcase {
 		Patient p4 = new Patient("James", "Feynman", 29, "paper cut");
 		Patient p5 = new Patient("Charles", "Tuscon", 51, "gun shot wound");
 	
-		fifo.insert(p1, p1.getIllnessCriticality());
-		fifo.insert(p2, p2.getIllnessCriticality());
-		fifo.insert(p3, p3.getIllnessCriticality());
-		fifo.insert(p4, p4.getIllnessCriticality());
-		fifo.insert(p5, p5.getIllnessCriticality());
+		queue.insert(p1, p1.getIllnessCriticality());
+		queue.insert(p2, p2.getIllnessCriticality());
+		queue.insert(p3, p3.getIllnessCriticality());
+		queue.insert(p4, p4.getIllnessCriticality());
+		queue.insert(p5, p5.getIllnessCriticality());
 		
 		
 		for(int i=0; i<5; ++i){
-			assertEquals(5-i, fifo.getElementNr());
-			System.out.println(fifo.getElementNr());
-			Patient p = (Patient) fifo.getNext();
+			assertEquals(5-i, queue.getElementNr());
+			System.out.println(queue.getElementNr());
+			Patient p = (Patient) queue.removeTop();
 			System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 		}
 		
-		assertEquals(0, fifo.getElementNr());
+		assertEquals(0, queue.getElementNr());
 
-		
-		//fail("Not yet implemented");
 	}
 	
 	@Test
 	public void concurrencyTest() {
-		AbstractFIFO fifo = new AbstractFIFO();
+		PriorityQueue fifo = new PriorityQueue();
 		
 		Patient p1 = new Patient("John", "Malon", 26, "paper cut");
 		Patient p2 = new Patient("Mike", "Mccain", 43, "gun shot wound");
@@ -235,13 +233,11 @@ public class Testcase {
 			
 			for(int i=0; i<3; ++i){
 				System.out.println(fifo.getElementNr());
-				Patient p = (Patient) fifo.getNext();
+				Patient p = (Patient) fifo.removeTop();
 				System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 			}
 		};
 		
-
-
 
 		Runnable insertAndGetTask2 = () -> {
 			fifo.insert(p4, p4.getIllnessCriticality());
@@ -253,7 +249,7 @@ public class Testcase {
 			
 			for(int i=3; i<5; ++i){
 				System.out.println(fifo.getElementNr());
-				Patient p = (Patient) fifo.getNext();
+				Patient p = (Patient) fifo.removeTop();
 				System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 			}
 		};
