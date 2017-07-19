@@ -54,8 +54,8 @@ public class PriorityQueue{
 			}
 			
 			// Insert the last element and it's priority.
-			elements[nrOfElements]=element;
-			priorities[nrOfElements]=priority;
+			elements[nrOfElements] = element;
+			priorities[nrOfElements] = priority;
 			nrOfElements++;
 			
 		} catch (InterruptedException e) {
@@ -76,16 +76,14 @@ public class PriorityQueue{
 		try {
 			lock.lock();
 			
-			int i=0;
 			boolean found = false;
-			
-			while(!found && i<nrOfElements){
+			for(int i=0; i<nrOfElements; ++i){
 				if(elements[i].equals(element)){
 					priorities[i] = priority;
 					found = true;
 				}
-				++i;
 			}
+			
 
 			if(!found){
 				String logMessage = "The specified element with class" + element.getClass().getName() + "was not found in the queue during method changePriority!";
@@ -103,21 +101,30 @@ public class PriorityQueue{
 	}
 	
 	/*
-	 * Returns the next element 
-	 * and removes it from the FIFO.
+	 * Returns the first element in based on it's
+	 *  priority and removes it from the queue.
 	 * The arrays maximum size is not shrinked 
 	 * when elements are removed, because the 
 	 * extra space will probably be needed later.
 	 * 
 	 * Time Complexity: O(2n)
 	 */
-	public Object removeTop(){
+	public Object removeFirst(){
 		try {
 			lock.lock();
 			
-			// Return null if there are no elements.
+			/*
+			 * If the internal array would be stored always sorted
+			 * insert would be O(2*n)
+		 	 * getNext would be O(1)           
+			 * the complexity of the two functions above have the exactly reversed complexity
+			 * the changePriority would have the same complexity because binary search can't be applied to make it O( log(n) )
+			 * sorting the array would be motivated if the remove should be faster than the insert
+			*/
+			
+			// Throw exception if there are no elements.
 			if(nrOfElements<1){
-				String logMessage = "No element to remove from the top in call removeTop.";
+				String logMessage = "No element to remove from the top in call removeFirst.";
 				LOGGER.log(Level.FINE, logMessage);
 				throw new PriorityQueueException(logMessage);
 			}
@@ -125,7 +132,7 @@ public class PriorityQueue{
 			/*
 			 * Searching from left to right the maximum priority object.
 			 * Elements are inserted in to the end of the array, 
-			 * so the leftmost is needed.
+			 * so the leftmost is needed with the maximum priority.
 			 */
 			int max = -1;
 			Object next = null;
@@ -149,7 +156,7 @@ public class PriorityQueue{
 			nrOfElements--;
 			return next;
 		} catch (InterruptedException e) {
-			String logMessage = "Thread was interrupted during method call removeTop on a " + getClass().getName() + " object.";
+			String logMessage = "Thread was interrupted during method call removeFirst on a " + getClass().getName() + " object.";
 			LOGGER.log(Level.FINE, logMessage);
 			throw new PriorityQueueException(logMessage);
 

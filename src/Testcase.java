@@ -88,7 +88,7 @@ public class Testcase {
 		
 		queue.insert(p1, p1.getIllnessCriticality());
 
-		Patient p = (Patient) queue.removeTop();
+		Patient p = (Patient) queue.removeFirst();
 		assertEquals("John", p.getFirstName());
 		assertEquals("Malon", p.getLastName());
 		assertEquals(26, p.getAge());
@@ -106,7 +106,7 @@ public class Testcase {
 		queue.insert(p1, 1);
 		queue.insert(p2, 2);
 
-		Patient p = (Patient) queue.removeTop();
+		Patient p = (Patient) queue.removeFirst();
 		assertEquals("Mike", p.getFirstName());
 		assertEquals("Mccain", p.getLastName());
 		assertEquals(43, p.getAge());
@@ -118,7 +118,7 @@ public class Testcase {
 	public void getNext_emptyFifo_null(){
 		PriorityQueue queue = new PriorityQueue();
 		
-		queue.removeTop();
+		queue.removeFirst();
 	}
 	
 	@Test
@@ -135,7 +135,7 @@ public class Testcase {
 		queue.insert(s3, 7);
 		queue.insert(s4, 2);
 
-		assertEquals("C", (String)queue.removeTop());
+		assertEquals("C", (String)queue.removeFirst());
 	}
 	
 	@Test
@@ -156,7 +156,7 @@ public class Testcase {
 		queue.insert(s5, 7);
 		queue.insert(s6, 7);
 
-		assertEquals("C", (String)queue.removeTop());
+		assertEquals("C", (String)queue.removeFirst());
 	}
 	
 	@Test
@@ -179,13 +179,13 @@ public class Testcase {
 		
 		queue.changePriority(s4, 8);
 
-		assertEquals("D", (String)queue.removeTop());
+		assertEquals("D", (String)queue.removeFirst());
 	}
 
 
 	
 	@Test
-	public void getElementNr_multipleNextMethodCall_elementNrDecrements() {
+	public void getElementNr_multipleGetFIrstMethodCall_elementNrDecrements() {
 		PriorityQueue queue = new PriorityQueue();
 		
 		Patient p1 = new Patient("John", "Malon", 26, "paper cut");
@@ -204,7 +204,7 @@ public class Testcase {
 		for(int i=0; i<5; ++i){
 			assertEquals(5-i, queue.getElementNr());
 			System.out.println(queue.getElementNr());
-			Patient p = (Patient) queue.removeTop();
+			Patient p = (Patient) queue.removeFirst();
 			System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 		}
 		
@@ -233,7 +233,7 @@ public class Testcase {
 			
 			for(int i=0; i<3; ++i){
 				System.out.println(fifo.getElementNr());
-				Patient p = (Patient) fifo.removeTop();
+				Patient p = (Patient) fifo.removeFirst();
 				System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 			}
 		};
@@ -249,7 +249,7 @@ public class Testcase {
 			
 			for(int i=3; i<5; ++i){
 				System.out.println(fifo.getElementNr());
-				Patient p = (Patient) fifo.removeTop();
+				Patient p = (Patient) fifo.removeFirst();
 				System.out.println(p.getFirstName() + " " + p.getLastName() + " " + p.getIllnessCriticality());
 			}
 		};
