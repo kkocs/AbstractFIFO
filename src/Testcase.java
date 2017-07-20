@@ -177,7 +177,7 @@ public class Testcase {
 		queue.insert(s5, 7);
 		queue.insert(s6, 7);
 		
-		queue.changePriority(s4, 8);
+		queue.changePriority(s4, 2, 8);
 
 		assertEquals("D", (String)queue.removeFirst());
 	}
